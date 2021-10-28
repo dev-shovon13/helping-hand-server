@@ -19,6 +19,7 @@ async function run() {
         await client.connect();
         const database = client.db("Helping-Hand");
         const eventsCollection = database.collection("events");
+        const userEventsCollection = database.collection("userEvents");
 
         // GET API '
         // all events
@@ -35,10 +36,29 @@ async function run() {
             res.send(events)
         })
 
+        app.get('/userEvents', async (req, res) => {
+            const cursor = userEventsCollection.find({})
+            const events = await cursor.toArray()
+            res.send(events)
+        })
+        //single event
+        app.get('/userEvents/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: ObjectId(id) }
+            const events = await userEventsCollection.findOne(query)
+            res.send(events)
+        })
+
         // POST API
         app.post('/events', async (req, res) => {
             const newEvent = req.body
             const result = await eventsCollection.insertOne(newEvent);
+            res.json(result)
+        })
+
+        app.post('/userEvents', async (req, res) => {
+            const newEvent = req.body
+            const result = await userEventsCollection.insertOne(newEvent);
             res.json(result)
         })
     } finally {
