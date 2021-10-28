@@ -66,7 +66,7 @@ async function run() {
         app.delete('/userEvents/:id', async (req, res) => {
             const id = req.params.id
             const query = { _id: ObjectId(id) }
-            const result = await usersCollection.deleteOne(query)
+            const result = await userEventsCollection.deleteOne(query)
             res.json(result)
         })
 
