@@ -17,56 +17,70 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         await client.connect();
-        const database = client.db("Helping-Hand");
-        const eventsCollection = database.collection("events");
-        const userEventsCollection = database.collection("userEvents");
+        const database = client.db("Traveezy");
+        const servicesCollection = database.collection("services");
+        const userServiceCollection = database.collection("userServices");
 
         // GET API '
         // all events
-        app.get('/events', async (req, res) => {
-            const cursor = eventsCollection.find({})
-            const events = await cursor.toArray()
-            res.send(events)
+        app.get('/services', async (req, res) => {
+            const cursor = servicesCollection.find({})
+            const services = await cursor.toArray()
+            res.send(services)
         })
         //single event
-        app.get('/events/:id', async (req, res) => {
+        app.get('/services/:id', async (req, res) => {
             const id = req.params.id
             const query = { _id: ObjectId(id) }
-            const events = await eventsCollection.findOne(query)
-            res.send(events)
+            const services = await servicesCollection.findOne(query)
+            res.send(services)
         })
 
-        app.get('/userEvents', async (req, res) => {
-            const cursor = userEventsCollection.find({})
-            const events = await cursor.toArray()
-            res.send(events)
+        app.get('/userServices', async (req, res) => {
+            const cursor = userServiceCollection.find({})
+            const services = await cursor.toArray()
+            res.send(services)
         })
         //single event
-        app.get('/userEvents/:id', async (req, res) => {
+        app.get('/userServices/:id', async (req, res) => {
             const id = req.params.id
             const query = { _id: ObjectId(id) }
-            const events = await userEventsCollection.findOne(query)
-            res.send(events)
+            const services = await userServiceCollection.findOne(query)
+            res.send(services)
         })
 
         // POST API
-        app.post('/events', async (req, res) => {
-            const newEvent = req.body
-            const result = await eventsCollection.insertOne(newEvent);
+        app.post('/services', async (req, res) => {
+            const newService = req.body
+            const result = await servicesCollection.insertOne(newService);
+            res.json(result)
+        })
+        app.post('/userServices', async (req, res) => {
+            const newOrder = req.body
+            const result = await userServiceCollection.insertOne(newOrder);
             res.json(result)
         })
 
-        app.post('/userEvents', async (req, res) => {
-            const newEvent = req.body
-            const result = await userEventsCollection.insertOne(newEvent);
-            res.json(result)
-        })
+        // UPDATE API 
+        // app.put('/userServices/:id', async (req, res) => {
+        //     const id = req.params.id
+        //     const updatedOrder = req.body
+        //     const filter = { _id: ObjectId(id) }
+        //     const options = { upsert: true }
+        //     const updateDoc = {
+        //         $set: {
+        //             status: updatedOrder.status,
+        //         },
+        //     };
+        //     const result = await usersCollection.updateOne(filter, updateDoc, options)
+        //     res.json(result)
+        // })
 
         // DELETE API 
-        app.delete('/userEvents/:id', async (req, res) => {
+        app.delete('/userServices/:id', async (req, res) => {
             const id = req.params.id
             const query = { _id: ObjectId(id) }
-            const result = await userEventsCollection.deleteOne(query)
+            const result = await userServiceCollection.deleteOne(query)
             res.json(result)
         })
 
